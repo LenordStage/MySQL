@@ -1,0 +1,946 @@
+Write a query that calculates the difference between the highest salaries found in the marketing and engineering departments. Output just the absolute difference in salaries.
+select abs(max(a.salary) - max(b.salary)) as salary_difference
+from db_employee a, db_employee b
+where a.department_id = 4 and b.department_id = 1;
+
+Find all inspections which are part of an inactive program.
+select * from los_angeles_restaurant_health_inspections
+where program_status = 'INACTIVE';
+Find the total cost of each customer's orders. Output customer's id, first name, and the total order cost. Order records by customer's first name alphabetically.
+
+select distinct(c.id), c.first_name,
+sum(o.total_order_cost) over(partition by c.id)
+from customers c
+inner join orders o
+on c.id = o.cust_id
+order by c.first_name;
+
+Find the last time each bike was in use. Output both the bike number and the date-timestamp of the bike's last use (i.e., the date-time the bike was returned). Order the results by bikes that were most recently used.
+select bike_number, max(end_time) as bike_last_used
+from dc_bikeshare_q1_2012
+group by bike_number
+order by end_time DESC;
+
+Find the gender that has made the most number of doctor appointments.
+Output the gender along with the corresponding number of appointments.
+select gender, count(appointmentid) as cappt_count
+from medical_appointments
+group by gender
+order by cappt_count desc
+limit 1;
+
+Find the total number of records that belong to each variety in the dataset. Output the variety along with the corresponding number of records. Order records by the variety in ascending order.
+select variety, count(sepal_length) as var_count
+from iris
+group by variety
+order by var_count asc;
+
+Find the total number of housing units completed for each year. Output the year along with the total number of housings. Order the result by year in ascending order.
+select year, sum(south+west+midwest+northeast)
+from housing_units_completed_us
+group by year
+order by year asc;
+
+*********************248-171-68-9*************
+Find the number of rows for each review score earned by 'Hotel Arena'. Output the hotel name (which should be 'Hotel Arena'), review score along with the corresponding number of rows with that score for the specified hotel.
+select hotel_name,reviewer_score,count(reviewer_score)
+from hotel_reviews
+where hotel_name='Hotel Arena'
+group by reviewer_score;
+
+Find the total AdWords earnings for each business type. Output the business types along with the total earnings.
+select business_type, sum(adwords_earnings)
+from google_adwords_earnings
+group by business_type;
+
+Find the number of acquisitions that occurred in each quarter of each year. Output the acquired quarter in YYYY-Qq format along with the number of acquisitions and order results by the quarters with the highest number of acquisitions first.
+select distinct acquired_quarter, 
+count(id) as count_acquired
+from crunchbase_acquisitions
+group by acquired_quarter
+order by count_acquired desc;
+
+Find the number of Yelp businesses that sell pizza.
+select count(business_id) as no_biz
+from yelp_business
+where categories like '%pizza%';
+
+Find the number of Yelp businesses that sell pizza.
+select count(business_id) as no_biz
+from yelp_business
+where categories like '%pizza%';
+
+Find players who participated in the Olympics representing more than one team.
+Output the player name, team, games, sport, and the medal.
+select name, team, games, sport, medal
+from olympics_athletes_events
+where team like '%/%';
+
+Find workers and their corresponding information from the table with an even number for their worker id.
+select worker_id, first_name, last_name, salary, joining_date, department
+from worker
+where (worker_id % 2) =0;
+
+
+**********************251-174-68-9*************************
+
+Find workers and their corresponding information from the table with an odd number for their worker id.
+select worker_id, first_name, last_name, salary, joining_date, department
+from worker
+where (worker_id %2)=1;
+
+Find the number of crime occurrences for each day of the week.
+Output the day alongside the corresponding crime count.
+select day_of_week, count(category) as crime_count
+from sf_crime_incidents_2014_01
+group by day_of_week
+order by crime_count desc;
+
+Count the number of movies that Abigail Breslin was nominated for an oscar.
+select count(nominee)
+from oscar_nominees
+where nominee='Abigail Breslin';
+
+What is the total sales revenue of Samantha and Lisa?
+select sum(sales_revenue) as total_rev
+from sales_performance
+where salesperson in ('Samjoin antha', 'Lisa');
+
+
+Find the first 5 rows by joining search details and contacts datasets. merge, join only
+select * 
+from airbnb_contacts as a
+join airbnb_searches as b
+on a.id_guest = b.id_user
+limit 5;
+
+Find the total number of searches for houses in Westlake neighborhood with a TV among the amenities.
+select count(*)
+from airbnb_search_details
+where neighbourhood = 'Westlake' and amenities like '%TV%';()
+
+Find the number of relationships that user  with id == 1 is not part of.
+select count(*)
+from facebook_friends
+where user1 != 1 and user2 !=1;
+
+Find all posts which were reacted to with a heart. For such posts output all columns from facebook_posts table.
+select * from facebook_posts
+where post_id IN (select post_id from facebook_reactions WHERE reaction = 'heart');
+
+*****************253-176-68-9************
+
+
+Find whether hosts or guests give higher review scores based on their average review scores. Output the higher of the average review score rounded to the 2nd decimal spot (e.g., 5.11)
+with temp as
+(
+select from_type, round (avg(review_score),2) as avg_score
+from airbnb_reviews
+where from_type='guest' or from_type='host'
+group by from_type
+)
+select *
+from temp
+where avg_score = (select max(avg_score) from temp);
+
+Meta/Facebook has developed a new programing language called Hack.To measure the popularity of Hack they ran a survey with their employees. The survey included data on previous programing familiarity as well as the number of years of experience, age, gender and most importantly satisfaction with Hack. Due to an error location data was not collected, but your supervisor demands a report showing average popularity of Hack by office location. Luckily the user IDs of employees completing the surveys were stored.
+Based on the above, find the average popularity of the Hack per office location.
+Output the location along with the average popularity.
+select a.location, avg(b.popularity)
+from facebook_employees as a
+join facebook_hack_survey as b
+on a.id = b.employee_id
+group by a.location;
+
+Find the number of 5-star reviews earned by Lo-Lo's Chicken & Waffles.
+select count(a.stars)
+from yelp_reviews as a
+where a.business_name like "%Lo-Lo's Chicken & Waffles%" and stars = '5';
+
+Cast stars column values to integer and return with all other column values.
+select business_name, review_id, user_id, review_date, review_text,	funny, useful, cool,
+cast(stars as unsigned)
+from yelp_reviews
+where stars<> 0;
+
+<> not equal to (!=)
+
+Find records with the value '?' in the stars column.
+select *
+from yelp_reviews
+where stars like '%?%';
+
+
+Find the number of entries per star.
+Output each number of stars along with the corresponding number of entries.
+Order records by stars in ascending order.
+select stars, count(*)
+from yelp_reviews
+group by 1
+order by stars asc;
+
+Find the average number of stars for each state.
+Output the state name along with the corresponding average number of stars.
+select state, avg(stars) as average_stars
+from yelp_business
+group by 1;
+
+******************252-175-68-9************
+
+
+Find the number of open businesses.
+select sum(is_open) as open_count
+from yelp_business;
+
+Find the review count for one-star businesses from yelp.
+Output the name along with the corresponding review count.
+select name, review_count 
+from yelp_business
+where stars = '1';
+
+Find the number of US-based wineries that have expensive wines.
+A wine is considered to be expensive if its price is $200 or more.select count(distinct winery) as no_expensive_wines_us
+from winemag_p1
+where price >=200 and country = 'US';
+
+Find wine varieties tasted by 'Roger Voss' and with a value in the 'region_1' column of the dataset. Output unique variety names only.
+select variety
+from winemag_p2
+where taster_name = 'Roger Voss' and region_1 !=""
+group by variety;
+
+Find all wine varieties which can be considered cheap based on the price.
+A variety is considered cheap if the price of a bottle lies between 5 to 20 USD.
+Output unique variety names only.
+select distinct(variety)
+from winemag_p1
+where price between 5 and 20;
+
+Find all top-rated wineries based on points.
+Consider a top-rated winery has been awarded points more or equal than 95.
+select winery, points
+from winemag_p1
+where points >=95
+group by winery;
+
+Find prices for Spanish, Italian, and French wines. Output the price.
+select country, price
+from winemag_p1
+where country in ('Spain','Italy','France');
+
+Find the average cost of each request status.
+Request status can be either 'success' or 'fail'.
+Output the request status along with the average cost.
+select request_status, avg(monetary_cost)
+from uber_ride_requests
+group by request_status;
+
+*************255-178-68-9***********
+
+Find the average distance traveled in each hour.
+Output the hour along with the corresponding average traveled distance.
+Sort records by the hour in ascending order.
+select hour, avg(travel_distance)
+from lyft_rides
+group by hour
+order by hour asc;
+
+Find the hour with the highest gasoline cost. Assume there's only 1 hour with the highest gas cost.
+select hour, max(gasoline_cost) as m
+from lyft_rides
+group by hour
+order by m desc
+limit 1; 
+
+Find all Lyft rides which happened on rainy days before noon.
+select *
+from lyft_rides
+where hour <12 and weather = 'rainy';
+
+Find all Lyft drivers who earn either equal to or less than 30k USD or equal to or more than 70k USD.
+Output all details related to retrieved records.
+select * 
+from lyft_drivers
+where yearly_salary <=30000 or yearly_salary >=70000;
+
+Find the advertising channel where Uber spent more than 100k USD in 2019.
+select advertising_channel
+from uber_advertising
+where money_spent > 100000 and year = 2019;
+
+Find the cost per customer for each advertising channel and year combination . Include only channels that are advertised via public transport (advertising channel includes "bus" substring).
+The cost per customer is equal to the total spent money divided by the total number of acquired customers through that advertising channel. Output advertising channel and its cost per customer.
+select advertising_channel, year, money_spent/customers_acquired as cost_per_customer
+from uber_advertising
+where advertising_channel like "%bus%";
+
+Find the year that Uber acquired more than 2000 customers through advertising using celebrities.
+select year
+from uber_advertising
+where advertising_channel = 'celebrities'and customers_acquired >2000;
+
+Find songs that are ranked between 8-10.
+Output the track name along with the corresponding position, ordered ascendingly.
+select trackname, position
+from spotify_worldwide_daily_song_ranking
+where position between 8 and 10
+order by position asc;
+
+Find the total number of streams for the top 100 ranked songs.
+select sum(streams)
+from spotify_worldwide_daily_song_ranking
+where position <=100;
+
+Find the average number of streams across all songs.
+select avg(streams)
+from spotify_worldwide_daily_song_ranking;
+
+Find the top 10 ranked songs by position. Output the track name along with the corresponding position and sort records by the position in descending order and track name alphabetically, as there are many tracks that are tied for the same position.
+select distinct trackname, position
+from spotify_worldwide_daily_song_ranking
+where position <=10
+order by position desc, trackname asc;
+
+Find songs with less than 2000 streams.
+Output the track name along with the corresponding streams.
+Sort records by streams in descending order.
+There is no need to group rows with same track name
+select distinct trackname, streams
+from spotify_worldwide_daily_song_ranking
+where streams <2000
+order by streams desc;
+
+
+*************296*************
+
+Find how many times each artist appeared on the Spotify ranking list
+Output the artist name along with the corresponding number of occurrences.
+Order records by the number of occurrences in descending order.
+select artist,count(*) as app_count
+from spotify_worldwide_daily_song_ranking
+group by artist
+order by app_count desc;
+
+Find songs that have more than 3 million streams.
+Output the track name, artist, and the corresponding streams.
+Sort records based on streams in descending order.
+select trackname, artist, streams
+from spotify_worldwide_daily_song_ranking
+where streams >3000000
+order by streams desc;
+
+Get the job titles of the 3 employees who received the most overtime pay
+Output the job title of selected records.
+select jobtitle
+from sf_public_salaries
+order by overtimepay desc
+limit 3;
+
+Find the average total pay for each employee.
+Output the employee name along with the corresponding average total pay.
+select employeename, avg(totalpay) as avg_total_pay
+from sf_public_salaries
+group by employeename;
+
+Find all employees with a job title that contains 'METROPOLITAN TRANSIT AUTHORITY' and output the employee's name along with the corresponding total pay with benefits.
+select employeename, totalpaybenefits
+from sf_public_salaries
+where jobtitle like '%METROPOLITAN TRANSIT AUTHORITY%';
+
+Find benefits that people with the name 'Patrick' have.
+Output the employee name along with the corresponding benefits.
+select employeename, benefits
+from sf_public_salaries
+where employeename like '%Patrick%';
+
+Find job titles that had 0 hours of overtime.
+Output unique job title names.
+select distinct jobtitle, overtimepay
+from sf_public_salaries
+where overtimepay = 0;
+
+Find the base pay for Police Captains.
+Output the employee name along with the corresponding base pay.
+select employeename, basepay, jobtitle
+from sf_public_salaries
+where  jobtitle like "%Police" or jobtitle like  "%Captain%";
+
+select distinct qb, max(game_points) as mgp
+from qbstats_2015_2016
+where year = 2016 
+group by qb
+order by mgp desc
+limit 10;
+
+Find the top 10 quarterbacks with the highest game points in 2016.
+Output the quarterback along with the corresponding game points.
+Order records based on game points in descending order and just output the top 10 rows without considering any ties in game points that would result in more than 10 qbs in the output.
+with CTE as(
+select qb, game_points, 
+dense_rank() over(order by game_points desc) rnk
+from qbstats_2015_2016 
+where year= 2016)
+select qb, game_points from CTE
+where rnk<=10 limit 10;
+
+Find the top 10 ratings quarterbacks received. Output the quarterback along with the corresponding rating.
+select qb, rate
+from qbstats_2015_2016
+order by rate desc
+limit 10;
+
+Find Olympics games that the youngest and the oldest athletes participated in the history of Olympics.
+Output all the details corresponding to each record.
+select *
+from olympics_athletes_events 
+where age = (select min(age) as min_age from olympics_athletes_events) or age = (select max(age) as max_age from olympics_athletes_events) 
+
+
+*******************************307*******************
+
+Find the history of each sport by finding the first year, last year, and the total number of years that sport played in the Olympics.
+Output the sport name along with the first year, last year, and the total years.
+Order records by the first year in descending order.
+select sport, min(year) as min_year, max(year) as max_year, count(distinct year) totals
+from olympics_athletes_events 
+group by sport
+order by min_year desc;
+
+Find the Olympic game which had the highest number of participants that didn't earn a medal.
+Output the Olympic game name along with the corresponding number of athletes.
+Olympic game name consists of the year and the season.
+select games, count(distinct name) as n_names
+from olympics_athletes_events
+where medal is null
+group by games
+order by n_names desc
+limit 1;
+
+Find the lowest, average, and the highest ages of athletes across all Olympics.
+select min(age) as min_age, max(age) as max_age, avg(age)
+from olympics_athletes_events;
+
+Find all athletes who were older than 40 years when they won either Bronze or Silver medals.
+select distinct name
+from olympics_athletes_events
+where age >= 40 and medal in ('silver','bronze')
+
+Find all minor that participated in Olympics games.
+A player is considered as a minor if he or she is older less or equal than 18 years.fs
+Output the name and age of the player along with participated Olympic games (ex: 1992 Summer).
+select name, age, games
+from olympics_athletes_events
+where age <=18;
+
+Find all events participated by Christine Jacoba Aaftink.
+Output unique values only.
+select distinct(event)
+from olympics_athletes_events
+where name = 'Christine Jacoba Aaftink';
+
+Find the athletes who competed in swimming events at the London Olympics.
+select distinct(name)
+from olympics_athletes_events
+where sport like '%swimming%' and city = 'London';
+
+Find all Danish athletes who won a medal.
+Output unique names only.select distinct name
+from olympics_athletes_events
+where team like '%Denmark%' and medal in ('gold', 'silver', 'bronze');
+
+***********************314********************
+
+Find unique names women who participated in an Olympics before World War 2. Let's consider the year 1939 as the start of WW2.
+select distinct name
+from olympics_athletes_events
+where sex  = 'f' and year <1939;
+
+Find the number of patrons who renewed books at least once but less than 10 times in April 2015. Each row is an unique patron.select count(patron_type_code) as num_patrons
+from library_usage
+where total_renewals between 1 and 9 and circulation_active_year =2015 and circulation_active_month = 'April';
+
+Find how many people registered in libraries in the year 2016.
+Output the total patrons. Keep in mind that each row represents different patron.
+select count(year_patron_registered) as num_reg 
+from library_usage
+where year_patron_registered = 2016;
+
+Find libraries who haven't provided the email address in circulation year 2016 but their notice preference definition is set to email.
+Output the library code.
+select distinct home_library_code
+from library_usage
+where circulation_active_year = 2016 and provided_email_address =0 and notice_preference_definition = 'email';
+
+Find the number of libraries that had 100 or more of total checkouts in February 2015. Be aware that there could be more than one row for certain library on monthly basis.
+select count(distinct home_library_code)  as lib_count
+from library_usage
+where total_checkouts >=100 and circulation_active_month = 'february' and circulation_active_year = 2015;
+
+Find employees in the Sales department who achieved a target greater than 150.
+Output first names of employees.
+Sort records by the first name in descending order.
+select first_name
+from employee
+where target >150 and department = 'Sales'
+order by first_name desc;
+
+Compare each employee's salary with the average salary of the corresponding department.
+Output the department, first name, and salary of employees along with the average salary of that department.
+select department, first_name, salary,
+avg(salary) over(partition by department)as avg_salary
+from employee;
+
+Find order details made by Jill and Eva.
+Consider the Jill and Eva as first names of customers.
+Output the order date, details and cost along with the first name.
+Order records based on the customer id in ascending order.
+select order_date, order_details, total_order_cost, first_name
+from customers as a
+join orders as b
+on a.id = b.cust_id
+where first_name in ('jill', 'eva')
+order by cust_id asc;
+
+****************************322*******************
+
+Find departments with at more than or equal 5 employees.
+select department, id
+from employee
+group by department
+having count(id) >=5;
+
+Find employees that are not referred by the manager id 1.
+Output the first name of the employee.
+select first_name 
+from employee
+where manager_id !=1
+
+Find the number of employees in each department.
+Output the department name along with the corresponding number of employees.
+Sort records based on the number of employees in descending order.
+select department,count(id)
+from employee
+group by department;select department,count(id)
+from employee
+group by department;
+
+Find employees whose bonus is less than $150.
+Output the first name along with the corresponding bonus.
+select first_name, bonus
+from employee
+where bonus <150;
+
+Find the details of each customer regardless of whether the customer made an order. Output the customer's first name, last name, and the city along with the order details.
+You may have duplicate rows in your results due to a customer ordering several of the same items. Sort records based on the customer's first name and the order details in ascending order.
+select first_name, last_name, city, order_details
+from customers as a
+left join orders as b
+on a.id = b.cust_id
+order by first_name, order_details;
+merge is join is sql. Left join picked out a blank order details. 
+
+Find the team division of each player.
+Output the player name along with the corresponding team division.
+select distinct division, player_name
+from college_football_teams as a 
+join college_football_players as b;
+
+Find the five highest salaries.
+select distinct salary
+from worker
+order by 1 desc
+limit 5;
+
+Find the three lowest salaries.
+Order records based on the salary in ascending order.
+select distinct salary
+from worker
+order by 1 asc
+limit 3;
+
+Find the three highest salaries.
+Order records based on the salary in descending order.
+select distinct salary
+from worker
+order by 1 desc
+limit 3;
+
+Find the last five records of the dataset.
+select *
+from worker
+limit 5 offset 3;
+
+Find the first record of the dataset without using LIMIT or ORDER BY.
+select * 
+from worker
+where  worker_id = 1;
+
+***********************253*************
+
+Find the last record of the dataset without using LIMIT or ORDER BY.
+select * 
+from worker
+where  worker_id = 8;
+
+Find the 5 highest salaries.
+Order records based on salary in descending order.
+select distinct salary
+from worker
+order by 1 desc
+limit 5;
+
+Find the top 10 highest salaries and the corresponding information in the table
+Sort records based on the salary in descending order.
+select *
+from worker
+order by salary desc
+limit 10;
+
+Find the full name of workers whose salaries >= 50000 and <= 100000
+Output the worker's first name and last name in one column along with their salaries
+select concat(first_name, ' ',last_name) as full_name, salary 
+from worker
+where salary >= 50000 and salary <= 100000;
+
+Find the number of employees working in the Admin department.
+select count(department)
+from worker
+where department = 'Admin';
+
+Find all workers whose salary lies between 100000 and 500000.
+select * 
+from worker
+where salary between 100000 and 500000;
+
+Find all workers whose first name contains 6 letters and also ends with the letter 'h'.
+select *
+from worker
+where first_name like '_____h'
+
+Find all workers whose first name ends with the letter 'a'.
+select * 
+from worker
+where first_name like '%a';
+
+Find all workers whose first name contains the letter 'a'.
+select * 
+from worker
+where first_name like '%a%';
+
+Find all workers that work in the Admin department
+select * 
+from worker
+where department = 'Admin';
+
+Find details of workers excluding those with the first name 'Vipul' or 'Satish'. not equal
+select * 
+from worker
+where first_name <> 'Vipul' and first_name <> 'Satish';
+
+Find details of workers with the first name of either 'Vipul' or 'Satish'.
+select * 
+from worker
+where first_name in ('Vipul','Satish');
+
+Sort workers in ascending order by the first name and in descending order by department name.
+select * 
+from worker
+order by first_name asc, department desc;
+
+Combine the first and last names of workers with a space inbetween.
+select concat(first_name, ' ',last_name) as full_name
+from worker;
+
+Replace the letter 'a' with 'A' in the first name.
+select replace (first_name, 'a', 'A') as first_name
+from worker
+
+Print the first name after removing white spaces from the left side.
+select TRIM(LEADING ' ' FROM first_name) ltrim
+from worker;
+
+Print the first name after removing white spaces from the right side.
+select rtrim(first_name)
+from worker;
+**********************************************350***************************
+
+Find the position of the letter 'a' in the first name of the worker 'Amitah'.
+select distinct binary first_name, position('a' in  binary first_name) as pos_of_a
+from worker
+where first_name='Amitah';
+
+Print the first three characters of the first name.
+select substring(first_name, 1,3)
+from worker;
+
+Find business types present in the dataset.
+select business_type
+from google_adwords_earnings
+group by business_type;
+
+Find all companies with more than 10 employees. Output all columns.
+select * 
+from google_adwords_earnings
+where n_employees >10;
+
+Find all records with words that start with the letter 'g'.
+Output words1 and words2 if any of them satisfies the condition.
+select distinct (words1), (words2)
+from google_word_lists
+where (words1 like '%,g%' or words1 like 'g%') or (words2 like '%,g%' or words2 like 'g%')
+
+Find drafts which contains the word 'optimism'.
+select filename, contents
+from google_file_store
+where contents like '%optimism%' and filename like '%draft%';
+
+***************************356*************************
+
+Find the total assets of the energy sector.
+select sum(assets)
+from forbes_global_2010_2014
+where sector = 'Energy';
+
+Find the number of USA companies that are on the list.
+select count(country)
+from forbes_global_2010_2014
+where country = 'United States';
+
+Find the total market value for the financial sector.
+select sum(marketvalue)
+from forbes_global_2010_2014
+where sector = 'Financials';
+
+Find the average profit for major banks.
+select avg(profits)
+from forbes_global_2010_2014
+where industry = 'Major Banks';
+
+Find the total number of interactions on days 0 and 2.
+Output the result alongside the day.
+select day, count(*) as day_count
+from facebook_user_interactions
+where day = 0 or day =2
+group by day;
+
+Find all users that have performed at least one scroll_up event.
+select user_id
+from facebook_web_log
+where action = 'scroll_up'
+group by user_id;
+
+Find the overall friend acceptance count for a given date.
+Assume the date is 2nd of January 2019.
+select count(date_approved)
+from facebook_friendship_requests
+where date_approved = '2019-01-02';
+
+Find the maximum step reached for every feature.
+Output the feature id along with its maximum step.
+select feature_id, max(step_reached)
+from facebook_product_features_realizations
+group by feature_id;
+
+Find all actions which occurred more than once in the weblog.
+select action
+from facebook_web_log
+group by action
+having count(action) >1;
+
+*************************365*****************
+Find the number of views each post has.
+Output the post id along with the number of views.
+Order records by post id in ascending order.
+select post_id, count(viewer_id)
+from facebook_post_views
+group by post_id
+order by post_id asc;
+
+Find all users who liked one or more posts
+select friend, count(reaction)
+from facebook_reactions
+where reaction = ('like');
+
+Find all posts with a keyword that contains 'nba' substring.
+select *
+from facebook_posts
+where post_keywords like '%nba%';
+
+Find all messages which have references to either user 2 or 3.
+select *	
+from facebook_messages_sent
+where text like '%User 2%' or text like '%User 3%' ;
+
+Find the complaint id for the processed complaints of type 1.
+select distinct complaint_id
+from facebook_complaints
+where type = 1 and processed = 1;
+
+List all interactions of user with id 4 on either day 0 or 2.
+select *
+from facebook_user_interactions
+where user1 = 4 or user2 = 4 
+order by day;
+
+Find the number of people that made a search on Airbnb.
+select count(distinct(id_user)) as tot_people_searching
+from airbnb_searches;
+
+Find the best publishers based on total sales made by each publisher.
+Output publishers alongside their total sales.
+Order records based on the sales in descending order.
+select publisher, sum(total)as total_sales
+from global_weekly_charts_2013_2014
+group by publisher
+order by total_sales desc;
+
+Find the genres that yielded the highest sales.
+Output the genre alongside its total sales.
+Order results based on the total sales in descending order.
+select genre, sum(total) as total_sales
+from global_weekly_charts_2013_2014
+group by genre
+order by total_sales desc;
+
+Find the most dangerous places in SF based on the crime count per address and district combination.
+Output the number of incidents alongside the corresponding address and the district.
+Order records based on the number of occurrences in descending order.
+select address, pd_district, count(distinct incidnt_num) as num_occurs
+from sf_crime_incidents_2014_01
+group by address, pd_district
+order by num_occurs desc
+
+************************************375****************
+Find all inspections made on restaurants and output the business name and the inspection score. For this question business is considered as a restaurant if it contains string "restaurant" inside its name.
+select business_name, inspection_score
+from sf_restaurant_health_violations
+where business_name like '%restaurant%';
+
+Find the business names that scored less than 50 in inspections.
+Output the result along with the corresponding inspection date and the score.
+select distinct business_name, inspection_score, date(inspection_date)
+from sf_restaurant_health_violations
+where inspection_score <50 
+order by inspection_score desc;
+
+Find all business postal codes of restaurants with issues related to the water (violation description contains substring "water").
+select distinct business_postal_code
+from sf_restaurant_health_violations
+where violation_description like '%water%';
+
+Find all businesses which have a phone number.
+select distinct business_name	
+from sf_restaurant_health_violations
+where business_phone_number	 is not null;
+
+Find all businesses which have low-risk safety violations.
+select distinct business_name
+from sf_restaurant_health_violations
+where risk_category = 'Low Risk';
+
+Find the mean of inspections scores between 91 and 100.
+Assuming that the scores are normally distributed.
+select avg(score)
+from los_angeles_restaurant_health_inspections
+where score between 91 and 100;
+
+Find the number of inspections per day.
+Output the result along with the date of the activity.
+Order results based on the activity date in the ascending order.
+select count(serial_number), activity_date
+from los_angeles_restaurant_health_inspections
+group by activity_date
+order by activity_date asc;
+
+Find the most common grade earned by bakeries.
+select grade
+from los_angeles_restaurant_health_inspections
+where facility_name like'%bakery%'
+group by grade
+order by count(*) desc limit 1;
+
+Count the number of unique facilities per municipality zip code along with the number of inspections. Output the result along with the number of inspections per each municipality zip code. Sort the result based on the number of inspections in descending order.
+select facility_zip, count(serial_number) as num_insp, count(distinct facility_id) as facility_count
+from los_angeles_restaurant_health_inspections
+group by facility_zip
+order by facility_count desc;
+
+Find the owner_name and the pe_description of facilities owned by 'BAKERY' where low-risk cases have been reported.
+select distinct(pe_description), owner_name
+from los_angeles_restaurant_health_inspections
+where owner_name like'%BAKERY%' and pe_description like'%LOW RISK%';
+
+***********************************385***********************
+
+Check if record_id is unique for every row.
+Output the total record ids and total unique record ids for comparison.
+select count(distinct record_id), count(record_id) as total_record_id
+from los_angeles_restaurant_health_inspections;
+
+Find the average score for grades A, B, and C.
+Output the results along with the corresponding grade (ex: 'A', avg(score)).
+select grade, avg(score) as avg_score
+from los_angeles_restaurant_health_inspections
+group by grade;
+
+Find all facilities with the zip code 90049, 90034, or 90045.
+select distinct facility_name
+from los_angeles_restaurant_health_inspections
+where facility_zip in (90049, 90034, 90045);
+
+Find all routine inspections where high-risks issues were found.
+select *
+from los_angeles_restaurant_health_inspections
+where pe_description like ('%HIGH RISK%') and service_description like('%ROUTINE INSPECTION%');
+
+Find all inspection details made for facilities owned by 'GLASSELL COFFEE SHOP LLC'.
+select * 
+from los_angeles_restaurant_health_inspections
+where owner_name like '%GLASSELL COFFEE SHOP LLC%';
+
+Find the activity date and the pe_description of facilities with the name 'STREET CHURROS' and with a score of less than 95 points.
+select activity_date, pe_description, facility_name, score
+from los_angeles_restaurant_health_inspections
+where facility_name like '%STREET CHURROS%' and score <95;
+
+Find the details of oscar winners between 2001 and 2009.
+select * 
+from oscar_nominees
+where year between 2001 and 2009 and winner =1;
+
+Find companies that have at least 2 Chinese speaking users.
+select company_id
+from playbook_users
+where language = 'chinese'
+group by 1 having count(distinct user_id) >=2;
+
+Find the highest market value for each sector.
+Output the sector name along with the result.
+select sector, max(marketvalue)
+from forbes_global_2010_2014
+group by sector;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
